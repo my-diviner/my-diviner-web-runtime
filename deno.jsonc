@@ -1,0 +1,86 @@
+{
+  "name": "@my-diviner/my-diviner-web-runtime",
+  "version": "0.0.0",
+  "exports": "./main.ts",
+  "lock": false,
+  "tasks": {
+    "build": "deno task build:fmt && deno task build:lint && deno task build:main",
+    "build:dev": "deno run -A dev.ts build",
+    "build:docker": "docker build --no-cache -t my-diviner-web-runtime -f DOCKERFILE .",
+    "build:fmt": "deno fmt",
+    "build:lint": "deno lint",
+    "build:main": "deno run -A main.ts build",
+    "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
+    "clean:docker": "docker stop my-diviner-web-runtime || true && docker rm my-diviner-web-runtime || true",
+    "deploy": "deno task build && deno task test && npx ftm git",
+    "deploy:docker": "docker run --name my-diviner-web-runtime --network eac-runtimes --env-file .env.docker -dp 127.0.0.1:3000:3000 my-diviner-web-runtime",
+    "dev": "deno run -A --watch=apps/,configs/,data/,routes/,src/,static/ dev.ts",
+    "network:docker": "docker network create eac-runtimes || true",
+    "refresh:docker": "deno task build:docker && deno task network:docker && deno task clean:docker && deno task deploy:docker",
+    "start": "deno run -A main.ts",
+    "test": "deno test -A tests/tests.ts --coverage=cov"
+  },
+  "imports": {
+    "@fathym/common": "https://deno.land/x/fathym_common@v0.0.185/mod.ts",
+    "@fathym/eac": "https://deno.land/x/fathym_everything_as_code@v0.0.415/mod.ts",
+    "@fathym/eac/runtime": "https://deno.land/x/fathym_eac_runtime@v0.0.299/mod.ts",
+    "@fathym/eac/runtime/": "https://deno.land/x/fathym_eac_runtime@v0.0.299/",
+    "@fathym/eac/runtime/browser": "https://deno.land/x/fathym_eac_runtime@v0.0.299/browser.ts",
+    "@fathym/ioc": "https://deno.land/x/fathym_ioc@v0.0.10/mod.ts",
+    "@fathym/atomic": "https://deno.land/x/fathym_atomic_design_kit@v0.0.134/mod.ts",
+    "@fathym/atomic/": "https://deno.land/x/fathym_atomic_design_kit@v0.0.134/",
+    "@fathym/atomic-icons": "https://deno.land/x/fathym_atomic_icons@v0.0.44/mod.ts",
+    "@fathym/atomic-icons/browser": "https://deno.land/x/fathym_atomic_icons@v0.0.44/browser.ts",
+    "@fathym/atomic-icons/plugin": "https://deno.land/x/fathym_atomic_icons@v0.0.44/plugin.ts",
+    "preact": "https://esm.sh/preact@10.20.1",
+    "preact/": "https://esm.sh/preact@10.20.1/",
+    "preact-render-to-string": "https://esm.sh/*preact-render-to-string@6.4.0",
+    "tailwindcss": "npm:tailwindcss@3.4.1",
+    "tailwindcss/": "npm:/tailwindcss@3.4.1/",
+    "tailwindcss/plugin": "npm:/tailwindcss@3.4.1/plugin.js",
+    "tailwindcss/unimportant": "npm:tailwindcss-unimportant@2.1.1"
+  },
+  "exclude": [
+    "**/_eac-runtime/*"
+  ],
+  "lint": {
+    "include": [
+      "apps/",
+      "configs/",
+      "src/",
+      "tests/"
+    ],
+    "exclude": [],
+    "rules": {
+      "tags": [
+        "recommended"
+      ],
+      "include": [
+        "ban-untagged-todo"
+      ],
+      "exclude": []
+    }
+  },
+  "fmt": {
+    "include": [
+      "apps/",
+      "configs/",
+      "src/",
+      "tests/"
+    ],
+    "exclude": [],
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "proseWrap": "preserve",
+    "semiColons": true,
+    "singleQuote": true,
+    "useTabs": false
+  },
+  "unstable": [
+    "kv"
+  ],
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
+  }
+}
